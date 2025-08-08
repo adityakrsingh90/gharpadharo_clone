@@ -21,9 +21,12 @@ const cityData = {
   // Add more cities similarly...
 };
 
+// 🔒 Type-safe city keys
+type City = keyof typeof cityData;
+
 const CityListings: React.FC = () => {
-  const cities = Object.keys(cityData);
-  const [activeCity, setActiveCity] = useState(cities[0]);
+  const cities = Object.keys(cityData) as City[];
+  const [activeCity, setActiveCity] = useState<City>(cities[0]);
 
   const data = cityData[activeCity];
 
@@ -41,7 +44,9 @@ const CityListings: React.FC = () => {
             onClick={() => setActiveCity(city)}
             className={clsx(
               'text-xl md:text-2xl font-bold transition-all duration-300 transform hover:scale-110',
-              activeCity === city ? 'text-[#5d56d6] border-b-2 border-[#5d56d6]' : 'text-gray-500 hover:text-gray-700'
+              activeCity === city
+                ? 'text-[#5d56d6] border-b-2 border-[#5d56d6]'
+                : 'text-gray-500 hover:text-gray-700'
             )}
           >
             {city}
@@ -53,9 +58,11 @@ const CityListings: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in-up">
         {Object.entries(data).map(([category, places]) => (
           <div key={category} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">{category} in <span className="text-[#5d56d6]">{activeCity}</span></h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              {category} in <span className="text-[#5d56d6]">{activeCity}</span>
+            </h3>
             <ul className="space-y-3 text-gray-700 text-base">
-              {places.map((place) => (
+              {(places as string[]).map((place) => (
                 <li key={place} className="hover:text-[#5d56d6] transition-colors duration-200 cursor-pointer">
                   <Link href={`/${activeCity}/${category}/${place}`} className="block">
                     {category} in {place}
